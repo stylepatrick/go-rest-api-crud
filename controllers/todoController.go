@@ -13,7 +13,7 @@ func ToDoCreate(c *gin.Context) {
 	}
 	c.Bind(&body)
 	todo := models.ToDo{Content: body.Content, Status: body.Status}
-	result := initializers.Db.Create(todo)
+	result := initializers.Db.Create(&todo)
 
 	if result.Error != nil {
 		c.Status(400)
@@ -34,11 +34,18 @@ func ToDoIndex(c *gin.Context) {
 	})
 }
 
-func ToDoShow(c *gin.Context) {
+func ToDoGet(c *gin.Context) {
 	id := c.Param("id")
 
 	var todo models.ToDo
 	initializers.Db.First(&todo, id)
+
+	if todo.ID == 0 {
+		c.JSON(400, gin.H{
+			"message": "Entity " + id + " not found!",
+		})
+		return
+	}
 
 	c.JSON(200, gin.H{
 		"toDo": todo,
@@ -70,10 +77,20 @@ func ToDoUpdate(c *gin.Context) {
 func ToDoDelete(c *gin.Context) {
 	id := c.Param("id")
 
+	var todo models.ToDo
+	initializers.Db.First(&todo, id)
+
+	if todo.Content == "" {
+		c.JSON(500, gin.H{
+			"message": "Already deleted!",
+		})
+		return
+	}
+
 	initializers.Db.Delete(&models.ToDo{}, id)
 
 	c.JSON(200, gin.H{
-		"message": "Todo" + id + "removed successfully!",
+		"message": "Todo " + id + " removed successfully!",
 	})
 
 }

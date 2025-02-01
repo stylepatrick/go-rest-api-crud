@@ -18,5 +18,5 @@ func main() {
 	routes.ToDoRoutes(r)
 
 	port := os.Getenv("PORT")
-	r.Run(port)
+	r.Run(":" + port)
 }

@@ -6,13 +6,13 @@ import (
 )
 
 func ToDoRoutes(r *gin.Engine) {
-	userGroup := r.Group("/toDos")
+	userGroup := r.Group("/toDo")
 
 	{
 		userGroup.POST("", controllers.ToDoCreate)
 		userGroup.GET("", controllers.ToDoIndex)
-		userGroup.GET("/:id", controllers.ToDoShow)
+		userGroup.GET("/:id", controllers.ToDoGet)
 		userGroup.PUT("/:id", controllers.ToDoUpdate)
-		userGroup.DELETE(":/id", controllers.ToDoDelete)
+		userGroup.DELETE("/:id", controllers.ToDoDelete)
 	}
 }
